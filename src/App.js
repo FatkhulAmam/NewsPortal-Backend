@@ -13,7 +13,7 @@ app.use(cors())
 //import route 
 const userRoute = require('./routes/users')
 
-app.use('/users', userRoute)
+app.use('/user', userRoute)
 
 app.get('/', (req, res) => {
     res.send({

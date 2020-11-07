@@ -1,7 +1,10 @@
 const route = require('express').Router()
-const {createUser, getUser} = require('../controllers/users')
+const {createUser, getUsers, getUser, updateUser, deleteUser} = require('../controllers/users')
 
 route.post('/', createUser)
-route.get('/', getUser)
+route.get('/', getUsers)
+route.get('/:id', getUser)
+route.patch('/:id', updateUser)
+route.delete('/:id', deleteUser)
 
 module.exports = route
