@@ -3,7 +3,7 @@ const {createCategory, getCategories, getCategory, updateCategory, deleteCategor
 
 route.post('/', createCategory)
 route.get('/', getCategories)
-route.get('/:id', getCategories)
+route.get('/:id', getCategory)
 route.patch('/:id', updateCategory)
 route.delete('/:id', deleteCategory)
 
