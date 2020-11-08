@@ -20,15 +20,12 @@ module.exports = {
         }
     },
     getCategories: async (req, res) => {
-        const results = await category.findAll({
-            limit: 2,
-            offset: 1
-        })
+        const results = await category.findAll()
         return responseStandart(res, 'List of All category', { results })
     },
     getCategory: async (req, res) => {
         const {id} = req.params
-        const results = await user.findByPk(id)
+        const results = await category.findByPk(id)
         if (results) {
             return responseStandart(res, `category id ${id}`, {results})
         } else {

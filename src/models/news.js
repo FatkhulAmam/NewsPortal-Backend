@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   news.init({
-    author: DataTypes.STRING,
+    author_id: DataTypes.INTEGER,
     headline: DataTypes.STRING,
     category: DataTypes.INTEGER,
     deskripsi: DataTypes.STRING
