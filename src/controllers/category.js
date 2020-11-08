@@ -1,6 +1,6 @@
 const { category } = require('../models')
 const responseStandart = require('../helpers/response')
-const bcrypt = require('bcryptjs')
+const paging = require('../helpers/pagination')
 const joi = require('joi')
 
 module.exports = {
@@ -20,8 +20,12 @@ module.exports = {
         }
     },
     getCategories: async (req, res) => {
-        const results = await category.findAll()
-        return responseStandart(res, 'List of All category', { results })
+        const count = await category.count()
+        const page = paging(req, count)
+        const { offset, pageInfo } = page
+        const { limitData: limit } = pageInfo
+        const result = await category.findAll({limit, offset})
+        return responseStandart(res, 'List all category detail', { result, pageInfo })
     },
     getCategory: async (req, res) => {
         const {id} = req.params

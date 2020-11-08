@@ -1,4 +1,5 @@
 const { news } = require('../models')
+const paging = require('../helpers/pagination')
 const responseStandart = require('../helpers/response')
 const bcrypt = require('bcryptjs')
 const joi = require('joi')
@@ -27,10 +28,12 @@ module.exports = {
         }
     },
     getNews: async (req, res) => {
-        const results = await news.findAll({
-            limit: 5
-        })
-        return responseStandart(res, 'List of All news', { results })
+        const count = await news.count()
+        const page = paging(req, count)
+        const { offset, pageInfo } = page
+        const { limitData: limit } = pageInfo
+        const result = await news.findAll({limit, offset})
+        return responseStandart(res, 'List all category detail', { result, pageInfo })
     },
     getNewsById: async (req, res) => {
         const {id} = req.params
