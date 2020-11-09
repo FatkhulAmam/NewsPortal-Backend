@@ -6,7 +6,7 @@ const uploadHelper = require('../helpers/upload')
 
 route.post('/', createUser)
 route.get('/', getUsers)
-route.get('/:id', getUser)
+route.get('/', getUser)
 route.patch('/', uploadHelper.single('pictures'), updateUser)
 route.delete('/:id', deleteUser)
 

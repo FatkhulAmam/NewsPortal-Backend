@@ -27,7 +27,6 @@ module.exports = {
         }
     },
     getUsers: async (req, res) => {
-        console.log(req.user);
         const count = await user.count()
         const page = paging(req, count)
         const { offset, pageInfo } = page
@@ -70,7 +69,7 @@ module.exports = {
         }
     },
     deleteUser: async (req, res) => {
-        const {id} = req.params
+        const {id} = req.user
         const results = await user.findByPk(id)
         if (results) {
             await results.destroy()
