@@ -28,6 +28,9 @@ app.get('/', (req, res) => {
     })
 })
 
+// provide static file(images)
+app.use('/uploads', express.static('assets/uploads'))
+
 app.listen(APP_PORT, ()=>{
     console.log(`Running on port ${APP_PORT}`)
 })
