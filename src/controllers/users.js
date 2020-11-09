@@ -1,5 +1,6 @@
 const { user } = require('../models')
 const responseStandart = require('../helpers/response')
+const paging = require('../helpers/pagination')
 const bcrypt = require('bcryptjs')
 const joi = require('joi')
 
@@ -26,17 +27,16 @@ module.exports = {
         }
     },
     getUsers: async (req, res) => {
-        const results = await user.findAll({
-            limit: 2,
-            offset: 1,
-            attributes: {
-                exclude: ['password']
-            }
-        })
-        return responseStandart(res, 'List of All Users', { results })
+        console.log(req.user);
+        const count = await user.count()
+        const page = paging(req, count)
+        const { offset, pageInfo } = page
+        const { limitData: limit } = pageInfo
+        const result = await user.findAll({limit, offset})
+        return responseStandart(res, 'List all category detail', { result, pageInfo })
     },
     getUser: async (req, res) => {
-        const {id} = req.params
+        const {id} = req.user
         const results = await user.findByPk(id, {
             attributes: {
                 exclude: ['password']
@@ -49,12 +49,19 @@ module.exports = {
         }
     },
     updateUser: async (req, res) => {
-        const {id} = req.params
-        const {name, birth_date, email, password} = req.body
+        const {id} = req.user
+        const {name, birth_date, email, password, gender} = req.body
+        const pictures = (req.file?`/uploads/${req.file.filename}`:undefined)
+        console.log(req.file);
         const results = await user.findByPk(id)
         if (results) {
             const data = {
-                name, birth_date, email, password
+                name,
+                birth_date,
+                email,
+                password,
+                gender,
+                photo: pictures
             }
             await results.update(data)
             return responseStandart(res, `update successfully`, {results})
