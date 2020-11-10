@@ -2,6 +2,7 @@ const { user } = require('../models')
 const responseStandart = require('../helpers/response')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const joi = require('joi')
 
 module.exports = {
     loginUser: async (req, res) => {
@@ -23,4 +24,25 @@ module.exports = {
             return responseStandart(res, 'wrong email or password', {}, 400, false)
         }
     },
+    registrasiUser: async (req, res) => {
+        const schema = joi.object({
+            name: joi.string().required(),
+            email: joi.string().required(),
+            password: joi.string().required()
+        })
+        let { value: results, error } = schema.validate(req.body)
+        if (!error) {
+            const salt = bcrypt.genSaltSync(10)
+            const hashedPass = bcrypt.hashSync(results.password, salt)
+            const dataUser = {
+                name: results.name,
+                email: results.email,
+                password: hashedPass
+            }
+            await user.create(dataUser)
+            return responseStandart(res, 'register success', {})
+        } else {
+            return responseStandart(res, 'error', {}, 401, false)
+        }
+    }
 }

@@ -2,6 +2,7 @@ const { news } = require('../models')
 const paging = require('../helpers/pagination')
 const responseStandart = require('../helpers/response')
 const bcrypt = require('bcryptjs')
+const { where, Op, order } = require('sequelize')
 const joi = require('joi')
 
 module.exports = {
