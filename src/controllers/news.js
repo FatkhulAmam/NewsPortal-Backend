@@ -1,4 +1,4 @@
-const { news } = require('../models')
+const { news, user, category } = require('../models')
 const paging = require('../helpers/pagination')
 const responseStandart = require('../helpers/response')
 const bcrypt = require('bcryptjs')
@@ -57,6 +57,10 @@ module.exports = {
         const { limitData: limit } = pageInfo
         const result = await news.findAll(
             {
+                include: [
+                    {model: user, as: 'author'},
+                    {model: category, as: 'categories'}
+                ],
                 limit, offset,
                 where: {
                     [searchKey]: {
