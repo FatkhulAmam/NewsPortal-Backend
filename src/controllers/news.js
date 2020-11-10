@@ -6,20 +6,23 @@ const joi = require('joi')
 
 module.exports = {
     createNews: async (req, res) => {
+        const { id } = req.user
+        const pictures = (req.file ? `/uploads/${req.file.filename}` : undefined)
         const schema = joi.object({
-            author: joi.string().required(),
             headline: joi.string().required(),
             category: joi.string().required(),
-            deskripsi: joi.string().required()
+            description: joi.string().required()
         })
         let { value: results, error } = schema.validate(req.body)
-        const { author, headline, category, deskripsi } = results
+        console.log(error);
+        const { author, headline, category, description } = results
         if (!error) {
             const dataUser = {
-                author: author,
+                author_id: id,
                 headline: headline,
                 category: category,
-                deskripsi: deskripsi
+                description: description,
+                picture: pictures
             }
             await news.create(dataUser)
             return responseStandart(res, 'create hot news success', {})
@@ -28,36 +31,74 @@ module.exports = {
         }
     },
     getNews: async (req, res) => {
+        let { search, sort } = req.query
+        let sortBy = ''
+        let sortFrom = ''
+        if (typeof sort === 'object') {
+            sortBy = Object.keys(sort)[0]
+            sortFrom = Object.values(sort)[0]
+        } else {
+            sortBy = 'id'
+            sortFrom = sort || 'asc'
+        }
+        let searchKey = ''
+        let searchValue = ''
+        if (typeof search === 'object') {
+            searchKey = Object.keys(search)[0]
+            searchValue = Object.values(search)[0]
+        } else {
+            searchKey = 'headline'
+            searchValue = search || ''
+        }
         const count = await news.count()
         const page = paging(req, count)
         const { offset, pageInfo } = page
         const { limitData: limit } = pageInfo
-        const result = await news.findAll({limit, offset})
+        const result = await news.findAll(
+            {
+                limit, offset,
+                where: {
+                    [searchKey]: {
+                        [Op.substring]: `${searchValue}`
+                    }
+                },
+                order: [
+                    [`${sortBy}`, `${sortFrom}`]
+                ]
+            }
+        )
         return responseStandart(res, 'List all category detail', { result, pageInfo })
     },
     getNewsById: async (req, res) => {
-        const {id} = req.params
+        const { id } = req.params
         const results = await news.findByPk(id)
         if (results) {
-            return responseStandart(res, `news id ${id}`, {results})
+            return responseStandart(res, `news id ${id}`, { results })
         } else {
             return responseStandart(res, `news ${id} not found`, {}, 401, false)
         }
     },
     updateNews: async (req, res) => {
-        const {id} = req.params
-        const {category_name} = req.body
+        const { id } = req.params
+        const { category, headline, description } = req.body
+        const pictures = (req.file ? `/uploads/${req.file.filename}` : undefined)
+        console.log(req.file);
         const results = await news.findByPk(id)
         if (results) {
-            const data = {category_name}
+            const data = {
+                category,
+                headline,
+                description,
+                picture: pictures
+            }
             await results.update(data)
-            return responseStandart(res, `update hottes successfully`, {results})
+            return responseStandart(res, `update successfully`, { results })
         } else {
-            return responseStandart(res, `cannot update news`, {}, 401, false)
+            return responseStandart(res, `cannot update news ${id}`, {}, 401, false)
         }
     },
     deleteNews: async (req, res) => {
-        const {id} = req.params
+        const { id } = req.params
         const results = await news.findByPk(id)
         if (results) {
             await results.destroy()

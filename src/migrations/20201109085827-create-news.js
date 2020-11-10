@@ -17,7 +17,10 @@ module.exports = {
       category: {
         type: Sequelize.INTEGER
       },
-      deskripsi: {
+      description: {
+        type: Sequelize.TEXT
+      },
+      picture: {
         type: Sequelize.STRING
       },
       createdAt: {
