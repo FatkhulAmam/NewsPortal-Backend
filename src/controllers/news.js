@@ -8,11 +8,12 @@ const joi = require('joi')
 module.exports = {
     createNews: async (req, res) => {
         const { id } = req.user
-        const pictures = (req.file ? `/uploads/${req.file.filename}` : undefined)
+        const pictures = (req.file ? `uploads/${req.file.filename}` : undefined)
         const schema = joi.object({
             headline: joi.string().required(),
             category: joi.string().required(),
-            description: joi.string().required()
+            description: joi.string().required(),
+            pictures: joi.string().required()
         })
         let { value: results, error } = schema.validate(req.body)
         console.log(error);
@@ -85,14 +86,14 @@ module.exports = {
     },
     updateNews: async (req, res) => {
         const { id } = req.params
-        const { category, headline, description } = req.body
-        const pictures = (req.file ? `/uploads/${req.file.filename}` : undefined)
-        console.log(req.file);
+        const pictures = (req.file ? `uploads/${req.file.filename}` : undefined)
+        const { headline, category, description } = req.body
         const results = await news.findByPk(id)
         if (results) {
-            const data = {
-                category,
+            console.log(req.file);
+            const data = { 
                 headline,
+                category,
                 description,
                 picture: pictures
             }

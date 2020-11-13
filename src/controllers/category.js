@@ -46,7 +46,6 @@ module.exports = {
         const { limitData: limit } = pageInfo
         const result = await category.findAll(
         {
-            limit, offset,
             where: {
                 [searchKey]: {
                     [Op.substring]: `${searchValue}`
@@ -73,6 +72,7 @@ module.exports = {
         const results = await category.findByPk(id)
         if (results) {
             const data = { category_name }
+            console.log(category_name);
             await results.update(data)
             return responseStandart(res, `update successfully`, { results })
         } else {

@@ -22,7 +22,7 @@ const newsRoute = require('./routes/news')
 app.use('/auth', authRoute)
 app.use('/user', authMiddleware, userRoute)
 app.use('/category', categoryRoute)
-app.use('/news',authMiddleware, newsRoute)
+app.use('/news', authMiddleware, newsRoute)
 
 app.get('/', (req, res) => {
     res.send({
