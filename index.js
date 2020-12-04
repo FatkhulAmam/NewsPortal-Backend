@@ -1,3 +1,3 @@
-require('dotenv').config()
+require('dotenv').config();
 
-require('./src/App')
+require('./src/App');

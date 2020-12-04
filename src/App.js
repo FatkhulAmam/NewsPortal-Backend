@@ -19,22 +19,15 @@ const userRoute = require('./routes/users');
 const categoryRoute = require('./routes/category');
 const newsRoute = require('./routes/news');
 
-<<<<<<< HEAD
 app.use('/auth', authRoute);
 app.use('/user', authMiddleware, userRoute);
 app.use('/category', categoryRoute);
 app.use('/news', authMiddleware, newsRoute);
-=======
-app.use('/auth', authRoute)
-app.use('/user', authMiddleware, userRoute)
-app.use('/category', categoryRoute)
-app.use('/news', authMiddleware, newsRoute)
->>>>>>> 163612ffdbe62f91aa3044ec0984145c01434dec
 
 app.get('/', (req, res) => {
   res.send({
     success: true,
-    message: 'backend running well',
+    message: 'Maos News running well',
   });
 });
 
@@ -42,5 +35,5 @@ app.get('/', (req, res) => {
 app.use('/uploads', express.static('assets/uploads'));
 
 app.listen(APP_PORT, () => {
-  console.log(`Running on port ${APP_PORT}`);
+  console.log(`Maos News Running on port ${APP_PORT}`);
 });
