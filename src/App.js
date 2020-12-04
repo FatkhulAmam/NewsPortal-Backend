@@ -19,10 +19,17 @@ const userRoute = require('./routes/users');
 const categoryRoute = require('./routes/category');
 const newsRoute = require('./routes/news');
 
+<<<<<<< HEAD
 app.use('/auth', authRoute);
 app.use('/user', authMiddleware, userRoute);
 app.use('/category', categoryRoute);
 app.use('/news', authMiddleware, newsRoute);
+=======
+app.use('/auth', authRoute)
+app.use('/user', authMiddleware, userRoute)
+app.use('/category', categoryRoute)
+app.use('/news', authMiddleware, newsRoute)
+>>>>>>> 163612ffdbe62f91aa3044ec0984145c01434dec
 
 app.get('/', (req, res) => {
   res.send({
