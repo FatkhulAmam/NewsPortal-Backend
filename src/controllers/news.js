@@ -15,12 +15,10 @@ module.exports = {
       headline: joi.string().required(),
       category: joi.string().required(),
       description: joi.string().required(),
-      pictures: joi.string().required(),
     });
     const { value: results, error } = schema.validate(req.body);
-    console.log(error);
     const {
-      author, headline, category, description,
+      headline, category, description,
     } = results;
     if (!error) {
       const dataUser = {
@@ -81,7 +79,12 @@ module.exports = {
   },
   getNewsById: async (req, res) => {
     const { id } = req.params;
-    const results = await news.findByPk(id);
+    const results = await news.findByPk(id, {
+      include: [
+        { model: user, as: 'author' },
+        { model: category, as: 'categories' },
+      ],
+    });
     if (results) {
       return responseStandart(res, `news id ${id}`, { results });
     }
@@ -112,5 +115,22 @@ module.exports = {
       return responseStandart(res, 'News is HOAX', {});
     }
     return responseStandart(res, 'News not found', {}, 401, false);
+  },
+  getNewsByUser: async (req, res) => {
+    const { id } = req.user;
+    const count = await news.count();
+    const page = paging(req, count);
+    const { offset, pageInfo } = page;
+    const { limitData: limit } = pageInfo;
+    const results = await news.findAll({
+      include: [
+        { model: user, as: 'author' },
+        { model: category, as: 'categories' },
+      ],
+      limit,
+      offset,
+      where: { author_id: id },
+    });
+    return responseStandart(res, 'List my news', { results, pageInfo });
   },
 };
