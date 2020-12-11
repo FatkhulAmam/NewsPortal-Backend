@@ -44,4 +44,27 @@ module.exports = {
     }
     return responseStandart(res, 'error', {}, 401, false);
   },
+  updatePassword: async (req, res) => {
+    const schema = joi.object({
+      email: joi.string().required(),
+      password: joi.string().required(),
+    });
+    const { value: results, error } = schema.validate(req.body);
+    const data = await user.findOne({ where: { email: results.email } });
+    if (!error) {
+      if (data !== null) {
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPass = bcrypt.hashSync(results.password, salt);
+        const dataUpdate = {
+          password: hashedPass,
+        };
+        await data.update(dataUpdate);
+        responseStandart(res, 'update successfully', {});
+      } else {
+        return responseStandart(res, 'email not listed', {}, 400, false);
+      }
+    } else {
+      return responseStandart(res, 'wrong email or password', {}, 400, false);
+    }
+  },
 };
