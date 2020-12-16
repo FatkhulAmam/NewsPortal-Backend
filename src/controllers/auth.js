@@ -11,7 +11,7 @@ module.exports = {
     if (data !== null) {
       const compared = await bcrypt.compare(req.body.password, data.password);
       if (compared === true) {
-        jwt.sign({ id: data.id }, process.env.APP_KEY, { expiresIn: '1m' }, (err, token) => {
+        jwt.sign({ id: data.id }, process.env.APP_KEY, (err, token) => {
           if (err) {
             return responseStandart(res, 'Error', { error: err.message }, 500, false);
           }
